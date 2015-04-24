@@ -9,7 +9,7 @@ class PartialBlock
   end
 
   def matches(*some_arguments)
-    return (self.sameListsSize(some_arguments, self.parameters_types) && self.sameParametersType(*some_arguments))
+    return (self.same_lists_size(some_arguments, self.parameters_types) && self.same_parameters_type(*some_arguments))
   end
 
   def call(*some_parameters
@@ -21,11 +21,11 @@ class PartialBlock
     self.block.call(some_parameters)
   end
 
-  def sameListsSize(list1, list2)
+  def same_lists_size(list1, list2)
     return list1.size == list2.size
   end
 
-  def sameParametersType(*some_arguments)
+  def same_parameters_type(*some_arguments)
 
     (some_arguments.zip self.parameters_types).all? do |argument, parameter_type| argument.is_a? parameter_type end
 
