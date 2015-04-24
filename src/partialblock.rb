@@ -8,11 +8,11 @@ class PartialBlock
     self.parameters_types = some_parameters_types
   end
 
-  def matches(*some_parameters)
-    return (self.sameListsSize(some_parameters, self.parameters_types) && self.sameParametersType(*some_parameters))
+  def matches(*some_arguments)
+    return (self.sameListsSize(some_arguments, self.parameters_types) && self.sameParametersType(*some_arguments))
   end
 
-  def call(*some_parameters)
+  def call(*some_parameters
 
     if (!self.matches(*some_parameters))
       raise ArgumentError.new('La cantidad de parametros informados no coinciden con la cantidad de parametros usados en el bloque')
@@ -25,20 +25,9 @@ class PartialBlock
     return list1.size == list2.size
   end
 
-  def sameParametersType(*some_parameters)
+  def sameParametersType(*some_arguments)
 
-    i = 0
-    while i < some_parameters.length  do
-      parameter_type = self.parameters_types[i]
-      parameter = some_parameters[i]
+    (some_arguments.zip self.parameters_types).all? do |argument, parameter_type| argument.is_a? parameter_type end
 
-      if (!parameter.is_a? parameter_type)
-        return false
-      end
-
-      i += 1
-    end
-
-    return true
   end
 end
