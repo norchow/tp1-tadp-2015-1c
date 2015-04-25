@@ -44,4 +44,12 @@ describe 'PartialBlock tests' do
     expect(pi.call()).to eq(3.14159265359)
     expect(pi.matches()).to be(true)
   end
+
+  it 'Calcula bien la distancia' do
+    distanceBlock = PartialBlock.new([Numeric]) do |num|
+      num
+    end
+    expect(distanceBlock.distance(3)).to eq(2)
+    expect(distanceBlock.distance(3.0)).to eq(1)
+  end
 end
