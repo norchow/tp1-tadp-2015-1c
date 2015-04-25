@@ -5,7 +5,6 @@ describe 'MultiMethod tests' do
 
   before(:all) do
     class A
-      extend MultiMethod
 
       partial_def :concat, [String, String] do |s1, s2|
         s1 + s2
@@ -26,7 +25,7 @@ describe 'MultiMethod tests' do
   end
 
   it 'funcionan los multimetodos' do
-    expect(A.new.concat('hello', ' world')).to eq('helloworld')
+    expect(A.new.concat('hello', 'world')).to eq('helloworld')
     expect(A.new.concat('hello', 3)).to eq('hellohellohello')
     expect(A.new.concat(['hello', ' world', '!'])).to eq('hello world!')
   end
