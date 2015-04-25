@@ -12,7 +12,7 @@ class PartialBlock
     return (self.same_lists_size(some_arguments, self.parameters_types) && self.same_parameters_type(*some_arguments))
   end
 
-  def call(*some_parameters
+  def call(*some_parameters)
 
     if (!self.matches(*some_parameters))
       raise ArgumentError.new('La cantidad de parametros informados no coinciden con la cantidad de parametros usados en el bloque')
@@ -30,4 +30,13 @@ class PartialBlock
     (some_arguments.zip self.parameters_types).all? do |argument, parameter_type| argument.is_a? parameter_type end
 
   end
+
+  def distance(*params)
+    sum = 0
+    params.each_with_index do |elem, index|
+      sum += elem.class.ancestors.index(self.parameters_types[index])
+    end
+    sum
+  end
+
 end
