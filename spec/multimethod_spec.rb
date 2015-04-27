@@ -22,6 +22,25 @@ describe 'MultiMethod tests' do
         "Objetos concatenados"
       end
     end
+
+    class Person
+
+      attr_accessor :name
+
+      def initialize(name)
+       self.name=name
+      end
+
+      partial_def :greet, [String] do |greeting|
+         greeting+" I am "+self.name
+      end
+
+      partial_def :greet, [Integer] do |repetitions|
+        ("Hi, I'm #{self.name} ")*repetitions
+      end
+
+    end
+
   end
 
   it 'funcionan los multimetodos' do
@@ -45,5 +64,10 @@ describe 'MultiMethod tests' do
   it 'elige bien segun distancia' do
     expect(A.new.concat("Hello", 2)).to eq("HelloHello")
     expect(A.new.concat(Object.new, 3)).to eq("Objetos concatenados")
+  end
+
+  it 'puede utilizar el contexto de la instancia' do
+    expect(Person.new("John").greet("Hi!")).to eq("Hi! I am John")
+    expect(Person.new("John").greet(3)).to eq("Hi, I'm John Hi, I'm John Hi, I'm John ")
   end
 end

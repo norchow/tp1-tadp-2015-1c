@@ -1,4 +1,4 @@
-class PartialBlock
+class PartialBlock < Proc
 
   attr_accessor :block, :parameters_types
 
@@ -26,17 +26,15 @@ class PartialBlock
   end
 
   def same_parameters_type(*some_arguments)
-
     (some_arguments.zip self.parameters_types).all? do |argument, parameter_type| argument.is_a? parameter_type end
-
   end
 
-  def distance(*params)
-    sum = 0
-    params.each_with_index do |elem, index|
-      sum += elem.class.ancestors.index(self.parameters_types[index])
-    end
-    sum
+  def distance_to(*arguments)
+    ((arguments.zip self.parameters_types).collect { |argument,parameter_type| self.distance_between(argument,parameter_type) }).reduce(:+)
+  end
+
+  def distance_between(argument,parameter_type)
+    argument.class.ancestors.index(parameter_type)
   end
 
 end

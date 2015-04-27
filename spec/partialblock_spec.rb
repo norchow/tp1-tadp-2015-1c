@@ -49,7 +49,7 @@ describe 'PartialBlock tests' do
     distanceBlock = PartialBlock.new([Numeric]) do |num|
                                                   num
                                                 end
-    expect(distanceBlock.distance(3)).to eq(2)
-    expect(distanceBlock.distance(3.0)).to eq(1)
+    expect(distanceBlock.distance_to(3)).to eq(2)
+    expect(distanceBlock.distance_to(3.0)).to eq(1)
   end
 end
