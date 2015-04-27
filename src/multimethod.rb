@@ -8,10 +8,10 @@ class Module
   end
 
   def partial_def (symbol, parameters_types, &method_body)
-    self.add_multimethod_definition(symbol, parameters_types, &method_body)
-
-    define_method symbol do |*arguments|
-      self.class.multimethod(symbol).execute_for *arguments,self
+    if(self.multi_methods.any?{|method| method.symbol == symbol })
+      self.multimethod(symbol).add_partial_definition(PartialBlock.new(parameters_types,&method_body))
+    else
+      self.add_multi_method(symbol, parameters_types, &method_body)
     end
   end
 
@@ -23,13 +23,14 @@ class Module
     self.multi_methods.collect {|method| method.symbol}
   end
 
-  def add_multimethod_definition(symbol, parameters_types, &method_body)
-    if(self.multi_methods.any?{|method| method.symbol == symbol })
-      self.multimethod(symbol).add_partial_definition(PartialBlock.new(parameters_types,&method_body))
-    else
-      self.multi_methods << MultiMethod.new(symbol,PartialBlock.new(parameters_types,&method_body))
+  def add_multi_method(symbol, parameters_types, &method_body)
+    self.multi_methods << MultiMethod.new(symbol,PartialBlock.new(parameters_types,&method_body))
+
+    define_method symbol do |*arguments|
+      self.class.multimethod(symbol).execute_for *arguments,self
     end
   end
+
 end
 
 class MultiMethod
