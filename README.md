@@ -24,8 +24,8 @@ Implementación de una extención al lenguaje Ruby para que este soporte método
 1. Que no lo sean y andar pidiéndoles el bloque
 2. Toquetear la implementación de send para que sepa manejarse con multimethods
 3. Usar un Hash
-4. Meterlos en otro lado
-4. Meterlos en un módulo "MultiMethodCapable" y luego hacer en Module el extends
+4.1. Meterlos en otro lado
+4.2. Meterlos en un módulo "MultiMethodCapable" y luego hacer en Module el extends
 5. que en el bloque pasado al define_method haga el instance eval y pida la definición(PartialBlock) que corresponde (Y la excepción que la tire... no sé dónde)
 6. Que todos los objetos sepan calcular su distancia a un determinado ancestor. 
 
