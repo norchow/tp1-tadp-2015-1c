@@ -34,7 +34,7 @@ class Module
       begin
         self.class.multimethod(symbol).execute_for *arguments,self
       rescue
-        self.class.superclass.multimethod(symbol).execute_for *arguments,self
+        self.class.superclass.new.send(symbol,*arguments)
       end
     end
 

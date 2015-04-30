@@ -6,8 +6,9 @@ describe 'MultiMethod tests' do
   before(:all) do
 
     class B
+
       partial_def :concat, [String, String,String] do |s1, s2, s3|
-        s1 + s2 + s3
+          s1 + s2 + s3
       end
 
     end
@@ -55,15 +56,9 @@ describe 'MultiMethod tests' do
     expect(A.new.concat('hello', 'world')).to eq('helloworld')
     expect(A.new.concat('hello', 3)).to eq('hellohellohello')
     expect(A.new.concat(['hello', ' world', '!'])).to eq('hello world!')
-  end
-
-  it 'funcionan los multimetodos B' do
     expect(B.new.concat('hello', 'world','!')).to eq('helloworld!')
   end
-  it 'multimethod lanza error si no matchea' do
-    expect(A.new.Concat('hello', 'wor','ld','!')).to raise(ArgumentError);
-  end
-
+  
   it 'mensaje multimethods' do
     expect(A.multimethods()).to eq([:concat])
   end
@@ -81,6 +76,10 @@ describe 'MultiMethod tests' do
     expect(Person.new("John").greet("Hi!")).to eq("Hi! I am John")
     expect(Person.new("John").greet(3)).to eq("Hi, I'm John Hi, I'm John Hi, I'm John ")
   end
-end
 
-expect(A.new.concat('hello', ' world', '!')).to eq('hello world!')
+
+  it 'funciona la herencia de multi-methods' do
+    expect(A.new.concat('hello', ' world', '!')).to eq('hello world!')
+  end
+
+end
