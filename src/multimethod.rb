@@ -7,6 +7,10 @@ class Module
     @multi_methods = @multi_methods || Array.new
   end
 
+  def get_multi_methods
+    multi_methods + super.multi_methods
+  end
+
   def partial_def (symbol, parameters_types, &method_body)
     if(self.multi_methods.any?{|method| method.symbol == symbol })
       self.multimethod(symbol).add_partial_definition(PartialBlock.new(parameters_types,&method_body))
@@ -27,8 +31,13 @@ class Module
     self.multi_methods << MultiMethod.new(symbol,PartialBlock.new(parameters_types,&method_body))
 
     define_method symbol do |*arguments|
-      self.class.multimethod(symbol).execute_for *arguments,self
+      begin
+        self.class.multimethod(symbol).execute_for *arguments,self
+      rescue
+        self.class.superclass.multimethod(symbol).execute_for *arguments,self
+      end
     end
+
   end
 
 end

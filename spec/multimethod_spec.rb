@@ -4,7 +4,14 @@ require_relative '../src/multimethod'
 describe 'MultiMethod tests' do
 
   before(:all) do
-    class A
+
+    class B
+      partial_def :concat, [String, String,String] do |s1, s2, s3|
+        s1 + s2 + s3
+      end
+
+    end
+    class A < B
 
       partial_def :concat, [String, String] do |s1, s2|
         s1 + s2
@@ -21,6 +28,7 @@ describe 'MultiMethod tests' do
       partial_def :concat, [Object, Object] do |o1, o2|
         "Objetos concatenados"
       end
+
     end
 
     class Person
@@ -49,8 +57,11 @@ describe 'MultiMethod tests' do
     expect(A.new.concat(['hello', ' world', '!'])).to eq('hello world!')
   end
 
+  it 'funcionan los multimetodos B' do
+    expect(B.new.concat('hello', 'world','!')).to eq('helloworld!')
+  end
   it 'multimethod lanza error si no matchea' do
-    expect {A.new.concat('hello', 'world', '!')}.to raise_error(ArgumentError)
+    expect(A.new.Concat('hello', 'wor','ld','!')).to raise(ArgumentError);
   end
 
   it 'mensaje multimethods' do
@@ -71,3 +82,5 @@ describe 'MultiMethod tests' do
     expect(Person.new("John").greet(3)).to eq("Hi, I'm John Hi, I'm John Hi, I'm John ")
   end
 end
+
+expect(A.new.concat('hello', ' world', '!')).to eq('hello world!')
