@@ -30,7 +30,7 @@ class PartialBlock < Proc
   end
 
   def distance_to(*arguments)
-    ((arguments.zip self.parameters_types).collect { |argument,parameter_type| self.distance_between(argument,parameter_type) }).reduce(:+)
+    (arguments.zip(self.parameters_types,(1..arguments.size))).collect { |argument,parameter_type,position| self.distance_between(argument,parameter_type)*position }.reduce(:+)
   end
 
   def distance_between(argument,parameter_type)
