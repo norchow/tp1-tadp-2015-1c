@@ -7,8 +7,12 @@ describe 'MultiMethod tests' do
 
     class B
 
-      partial_def :concat, [String, String,String] do |s1, s2, s3|
+      partial_def :concat, [String, String, String] do |s1, s2, s3|
           s1 + s2 + s3
+      end
+
+      partial_def :concat, [Integer, Integer, Integer ] do |n1, n2, n3|
+        n1 + n2 + n3
       end
 
     end
@@ -26,7 +30,15 @@ describe 'MultiMethod tests' do
         a.join
       end
 
+      partial_def :concat, [Integer, Integer, Integer ] do |n1, n2, n3|
+        n1 + n2 + n3 + 1
+      end
+
       partial_def :concat, [Object, Object] do |o1, o2|
+        "Objetos concatenados"
+      end
+
+      partial_def :concat, [Object,Object,Object] do |o1, o2, o3|
         "Objetos concatenados"
       end
 
@@ -58,7 +70,7 @@ describe 'MultiMethod tests' do
     expect(A.new.concat(['hello', ' world', '!'])).to eq('hello world!')
     expect(B.new.concat('hello', 'world','!')).to eq('helloworld!')
   end
-  
+
   it 'mensaje multimethods' do
     expect(A.multimethods()).to eq([:concat])
   end
@@ -81,5 +93,17 @@ describe 'MultiMethod tests' do
   it 'funciona la herencia de multi-methods' do
     expect(A.new.concat('hello', ' world', '!')).to eq('hello world!')
   end
+
+  it 'funciona la prioridad en la herencia de multi-methods' do
+    expect(A.new.concat('hello', ' world', 5)).to eq("Objetos concatenados")
+    expect(A.new.concat('hello', ' world', '!')).to eq('hello world!')
+  end
+
+  it 'pisa definicion con la misma firma en la herencia de multi-methods' do
+    expect(B.new.concat(1, 2 , 5)).to eq(8)
+    expect(A.new.concat(1, 2 , 5)).to eq(9)
+  end
+
+
 
 end
