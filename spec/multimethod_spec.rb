@@ -44,6 +44,14 @@ describe 'MultiMethod tests' do
 
     end
 
+    class C<A
+
+      partial_def :concat, [Object,Object,Object] do |o1, o2, o3|
+        "Objetos concatenados por la clase C"
+      end
+
+    end
+
     class Person
 
       attr_accessor :name
@@ -89,11 +97,6 @@ describe 'MultiMethod tests' do
     expect(Person.new("John").greet(3)).to eq("Hi, I'm John Hi, I'm John Hi, I'm John ")
   end
 
-
-  it 'funciona la herencia de multi-methods' do
-    expect(A.new.concat('hello', ' world', '!')).to eq('hello world!')
-  end
-
   it 'funciona la prioridad en la herencia de multi-methods' do
     expect(A.new.concat('hello', ' world', 5)).to eq("Objetos concatenados")
     expect(A.new.concat('hello', ' world', '!')).to eq('hello world!')
@@ -102,6 +105,11 @@ describe 'MultiMethod tests' do
   it 'pisa definicion con la misma firma en la herencia de multi-methods' do
     expect(B.new.concat(1, 2 , 5)).to eq(8)
     expect(A.new.concat(1, 2 , 5)).to eq(9)
+    expect(C.new.concat('hello', ' world', 5)).to eq("Objetos concatenados por la clase C")
+  end
+
+  it 'Siendo C<A<B, C ve los metodos de B' do
+    expect(C.new.concat("a", "b" , "c")).to eq("abc")
   end
 
 
