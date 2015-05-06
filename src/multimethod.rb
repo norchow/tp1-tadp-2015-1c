@@ -24,7 +24,7 @@ class Module
   end
 
   def executable_multi_method(symbol)
-    multi_method = MultiMethod.new(symbol)
+    multi_method = ExecutableMultiMethod.new(symbol)
     multi_method.partial_definitions = complete_unique_partial_definitions_for(symbol)
     return multi_method
   end
@@ -64,7 +64,7 @@ end
 
 class MultiMethod
 
-  attr_accessor :symbol, :partial_definitions,:carrier_class
+  attr_accessor :symbol, :partial_definitions
 
   def initialize(symbol)
     self.symbol = symbol
@@ -73,6 +73,14 @@ class MultiMethod
   def partial_definitions
     @partial_definitions = @partial_definitions || Array.new
   end
+
+  def add_partial_definition(partial_definition)
+    self.partial_definitions << partial_definition
+  end
+
+end
+
+class ExecutableMultiMethod < MultiMethod
 
   def execute_for(*arguments, receiver)
 
@@ -83,9 +91,6 @@ class MultiMethod
     receiver.instance_exec(*arguments,&(self.closest_definition_for *arguments))
   end
 
-  def add_partial_definition(partial_definition)
-    self.partial_definitions << partial_definition
-  end
 
   def closest_definition_for(*arguments)
     self.matching_definitions_for(*arguments).min_by {|definition| definition.distance_to *arguments}
@@ -94,5 +99,5 @@ class MultiMethod
   def matching_definitions_for(*arguments)
     self.partial_definitions.select {|definition| definition.matches *arguments}
   end
-end
 
+end
