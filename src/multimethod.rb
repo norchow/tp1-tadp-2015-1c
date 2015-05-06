@@ -100,4 +100,16 @@ class ExecutableMultiMethod < MultiMethod
     self.partial_definitions.select {|definition| definition.matches *arguments}
   end
 
+  def strict_definition_for(param_types, *arguments)
+    self.partial_definitions.find {|definition| definition.parameters_types == param_types}
+  end
+
+  def execute_strict_matching_for(param_types, *arguments, receiver)
+
+    if (self.partial_definitions.none?{|definition| definition.parameters_types == param_types})
+      raise ArgumentError.new('No hay una definición parcial para esos tipos')
+    end
+
+    receiver.instance_exec(*arguments,&(self.strict_definition_for(param_types,*arguments)))
+  end
 end
