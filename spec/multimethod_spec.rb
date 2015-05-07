@@ -15,6 +15,10 @@ describe 'MultiMethod tests' do
         n1 + n2 + n3
       end
 
+      partial_def :concat, [TrueClass] do |n1|
+        true
+      end
+
     end
     class A < B
 
@@ -114,6 +118,19 @@ describe 'MultiMethod tests' do
 
   it 'Si no define multimethod explota bien' do
     expect{B.executable_multi_method(:metodoloco).execute_for(1,2)}.to raise_error(NonexistentMultimethodDefinitonError)
+  end
+
+  it 'respond_to para multimethods funciona bien' do
+    expect(A.new.respond_to?(:concat,false, [Integer,Integer,Integer])).to be_truthy
+    expect(A.new.respond_to?(:concat,false, [Integer,Array,Integer,Integer])).to be_falsey
+  end
+
+  it 'respond_to ve la herencia' do
+    expect(A.new.respond_to?(:concat,false, [TrueClass])).to be_truthy
+  end
+
+  it 'respond_to original anda como siempre' do
+    expect(B.new.respond_to?(:concat,false)).to be_truthy
   end
 
 

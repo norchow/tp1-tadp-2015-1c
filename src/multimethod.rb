@@ -91,7 +91,6 @@ class ExecutableMultiMethod < MultiMethod
     receiver.instance_exec(*arguments,&(self.closest_definition_for *arguments))
   end
 
-
   def closest_definition_for(*arguments)
     self.matching_definitions_for(*arguments).min_by {|definition| definition.distance_to *arguments}
   end
@@ -104,6 +103,10 @@ class ExecutableMultiMethod < MultiMethod
     self.partial_definitions.find {|definition| definition.parameters_types == param_types}
   end
 
+  def is_defined_for_types? types
+    self.partial_definitions.any?{|definition| definition.matches_types types}
+  end
+
   def execute_strict_matching_for(param_types, *arguments, receiver)
 
     if (self.partial_definitions.none?{|definition| definition.parameters_types == param_types})
@@ -111,6 +114,23 @@ class ExecutableMultiMethod < MultiMethod
     end
 
     receiver.instance_exec(*arguments,&(self.strict_definition_for(param_types,*arguments)))
+  end
+end
+
+class Object
+
+  alias_method :original_respond_to?, :respond_to?
+
+  partial_def :respond_to?, [Object] do |symbol|
+    self.original_respond_to?(symbol)
+  end
+
+  partial_def :respond_to?, [Object,Object] do |symbol,include_all|
+    self.original_respond_to?(symbol,include_all)
+  end
+
+  partial_def :respond_to?, [Symbol,Object,Array] do |symbol,include_all,types|
+    self.class.executable_multi_method(symbol).is_defined_for_types?(types)
   end
 end
 
