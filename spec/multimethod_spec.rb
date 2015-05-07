@@ -112,6 +112,10 @@ describe 'MultiMethod tests' do
     expect(C.new.concat("a", "b" , "c")).to eq("abc")
   end
 
+  it 'Si no define multimethod explota bien' do
+    expect{B.executable_multi_method(:metodoloco).execute_for(1,2)}.to raise_error(NonexistentMultimethodDefinitonError)
+  end
+
 
 
 end

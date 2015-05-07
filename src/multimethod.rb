@@ -85,7 +85,7 @@ class ExecutableMultiMethod < MultiMethod
   def execute_for(*arguments, receiver)
 
     if (self.partial_definitions.none?{|definition| definition.matches *arguments})
-      raise ArgumentError.new('Los argumentos no coinciden en cantidad y/o tipo con los parámetros de ninguna defincición para este método')
+      raise NonexistentMultimethodDefinitonError.new('Los argumentos no coinciden en cantidad y/o tipo con los parámetros de ninguna defincición para este método')
     end
 
     receiver.instance_exec(*arguments,&(self.closest_definition_for *arguments))
@@ -107,9 +107,12 @@ class ExecutableMultiMethod < MultiMethod
   def execute_strict_matching_for(param_types, *arguments, receiver)
 
     if (self.partial_definitions.none?{|definition| definition.parameters_types == param_types})
-      raise ArgumentError.new('No hay una definición parcial para esos tipos')
+      raise NonexistentMultimethodDefinitonError.new('No hay una definición parcial para esos tipos')
     end
 
     receiver.instance_exec(*arguments,&(self.strict_definition_for(param_types,*arguments)))
   end
+end
+
+class NonexistentMultimethodDefinitonError < RuntimeError
 end
