@@ -1,68 +1,62 @@
 require_relative 'partialblock'
 
 class Module
-  attr_accessor :multi_methods
+  attr_accessor :multi_method_definitions
 
-  def multi_methods
-    @multi_methods = @multi_methods || Array.new
-  end
-
-  def partial_def (symbol, parameters_types, &method_body)
-    if(self.defines(symbol))
-      self.multimethod(symbol).add_partial_definition(PartialBlock.new(parameters_types,&method_body))
-    else
-      self.add_multi_method(symbol, parameters_types, &method_body)
-    end
-  end
-
-  def multimethod(symbol)
-    self.multi_methods.find {|method| method.symbol == symbol }
+  def multi_method_definitions
+    @multi_method_definitions = @multi_method_definitions || Array.new
   end
 
   def multimethods
-    self.multi_methods.collect {|method| method.symbol}
+    self.multi_method_definitions.collect {|method| method.symbol}
   end
 
-  def executable_multi_method(symbol)
-    multi_method = ExecutableMultiMethod.new(symbol)
-    multi_method.partial_definitions = complete_unique_partial_definitions_for(symbol)
-    return multi_method
+  def multi_method_definition(symbol)
+    self.multi_method_definitions.find {|method| method.symbol == symbol }
   end
 
-  def complete_partial_definitions_for(symbol)
-    self.ancestors_who_define(symbol).collect_concat {|ancestor| ancestor.local_partial_definitions_for(symbol)}
-  end
-
-  def complete_unique_partial_definitions_for(symbol)
-    self.complete_partial_definitions_for(symbol).uniq {|partial_def| partial_def.parameters_types}
+  def defines(symbol)
+    self.multi_method_definitions.any?{|method| method.symbol == symbol }
   end
 
   def ancestors_who_define(symbol)
     self.ancestors.select {|ancestor| ancestor.defines(symbol)}
   end
 
-  def local_partial_definitions_for(symbol)
-    self.multimethod(symbol).partial_definitions
+  def local_definition_for(symbol)
+    self.multi_method_definition(symbol)
   end
 
-  def defines(symbol)
-    self.multi_methods.any?{|method| method.symbol == symbol }
+  def flattened_definitions_for(symbol)
+    self.ancestors_who_define(symbol).collect {|ancestor| ancestor.local_definition_for(symbol)}
+  end
+
+  def multimethod(symbol)
+    MultiMethod.new(symbol, flattened_definitions_for(symbol))
+  end
+
+  def partial_def (symbol, parameters_types, &method_body)
+    if(self.defines(symbol))
+      self.multi_method_definition(symbol).add_partial_definition(PartialBlock.new(parameters_types,&method_body))
+    else
+      self.add_multi_method(symbol, parameters_types, &method_body)
+    end
   end
 
   def add_multi_method(symbol, parameters_types, &method_body)
-    multi_method = MultiMethod.new(symbol)
+    multi_method = MultiMethodDefinition.new(symbol)
     multi_method.add_partial_definition(PartialBlock.new(parameters_types,&method_body))
-    self.multi_methods << multi_method
+    self.multi_method_definitions << multi_method
 
     define_method symbol do |*arguments|
-        self.class.executable_multi_method(symbol).execute_for(*arguments,self)
+      self.class.multimethod(symbol).execute_for(*arguments,self)
     end
 
   end
 
 end
 
-class MultiMethod
+class MultiMethodDefinition
 
   attr_accessor :symbol, :partial_definitions
 
@@ -80,7 +74,22 @@ class MultiMethod
 
 end
 
-class ExecutableMultiMethod < MultiMethod
+class MultiMethod
+
+  attr_accessor :symbol, :definitions
+
+  def initialize(symbol,definitions)
+    self.symbol = symbol
+    self.definitions = definitions
+  end
+
+  def definitions
+    @definitions = @definitions || Array.new
+  end
+
+  def partial_definitions
+    self.definitions.collect_concat{|definition| definition.partial_definitions}.uniq {|partial_def| partial_def.parameters_types}
+  end
 
   def execute_for(*arguments, receiver)
 

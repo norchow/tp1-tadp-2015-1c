@@ -24,6 +24,7 @@ class Object
   end
 
   partial_def :respond_to?, [Symbol,Bool,Array] do |symbol,_,types|
-    self.class.executable_multi_method(symbol).is_defined_for_types?(types)
+    self.class.multimethod(symbol).is_defined_for_types?(types)
   end
 end
+

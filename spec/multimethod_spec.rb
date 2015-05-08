@@ -88,7 +88,7 @@ describe 'MultiMethod tests' do
   end
 
   it 'mensaje multimethod' do
-    A.multimethod(:concat)
+    A.multi_method_definition(:concat)
   end
 
   it 'elige bien segun distancia' do
@@ -117,7 +117,7 @@ describe 'MultiMethod tests' do
   end
 
   it 'Si no define multimethod explota bien' do
-    expect{B.executable_multi_method(:metodoloco).execute_for(1,2)}.to raise_error(NonexistentMultimethodDefinitonError)
+    expect{B.multimethod(:metodoloco).execute_for(1,2)}.to raise_error(NonexistentMultimethodDefinitonError)
   end
 
   it 'respond_to para multimethods funciona bien' do
