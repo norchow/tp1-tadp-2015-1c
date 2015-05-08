@@ -1,5 +1,5 @@
 require 'rspec'
-require_relative '../src/multimethod'
+require_relative '../src/respond_to'
 
 describe 'MultiMethod tests' do
 

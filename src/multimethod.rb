@@ -117,22 +117,5 @@ class ExecutableMultiMethod < MultiMethod
   end
 end
 
-class Object
-
-  alias_method :original_respond_to?, :respond_to?
-
-  partial_def :respond_to?, [Object] do |symbol|
-    self.original_respond_to?(symbol)
-  end
-
-  partial_def :respond_to?, [Object,Object] do |symbol,include_all|
-    self.original_respond_to?(symbol,include_all)
-  end
-
-  partial_def :respond_to?, [Symbol,Object,Array] do |symbol,include_all,types|
-    self.class.executable_multi_method(symbol).is_defined_for_types?(types)
-  end
-end
-
 class NonexistentMultimethodDefinitonError < RuntimeError
 end

@@ -15,13 +15,12 @@ class PartialBlock < Proc
   end
 
   def matches(*some_arguments)
-    return (self.same_lists_size?(some_arguments, self.parameters_types) && self.same_parameters_type(*some_arguments))
+    self.matches_types some_arguments.collect{|argument| argument.class}
   end
 
   def matches_types(some_types)
-    return (self.same_lists_size?(some_types, self.parameters_types) && self.same_parameters_types?(some_types))
+    self.same_lists_size?(some_types, self.parameters_types) && self.parameters_types_match?(some_types)
   end
-
 
   def call(*some_parameters)
 
@@ -36,11 +35,7 @@ class PartialBlock < Proc
     return list1.size == list2.size
   end
 
-  def same_parameters_type(*some_arguments)
-    (some_arguments.zip self.parameters_types).all? do |argument, parameter_type| argument.is_a? parameter_type end
-  end
-
-  def same_parameters_types?(some_types)
+  def parameters_types_match?(some_types)
     (some_types.zip self.parameters_types).all? do |type, parameter_type| type.is_descended? parameter_type end
   end
 
