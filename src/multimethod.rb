@@ -74,6 +74,24 @@ class MultiMethodDefinition
 
 end
 
+class Wrapper < BasicObject
+
+  attr_accessor :true_receiver
+
+  def initialize(true_receiver)
+    self.true_receiver = true_receiver
+  end
+
+  def beis(a)
+    "BEIS!"
+  end
+
+  def method_missing(symbol, *arguments)
+    true_receiver.send(symbol,*arguments)
+  end
+
+end
+
 class MultiMethod
 
   attr_accessor :symbol, :definitions
@@ -97,7 +115,9 @@ class MultiMethod
       raise NonexistentMultimethodDefinitonError.new('Los argumentos no coinciden en cantidad y/o tipo con los parámetros de ninguna defincición para este método')
     end
 
-    receiver.instance_exec(*arguments,&(self.closest_definition_for *arguments))
+    wrapper = Wrapper.new(receiver)
+
+    wrapper.instance_exec(*arguments,&(self.closest_definition_for *arguments))
   end
 
   def closest_definition_for(*arguments)

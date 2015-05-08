@@ -33,6 +33,11 @@ describe 'base tests' do
       partial_def :m, [String] do |text|
         base.m([String, String], text, text) + ' querido'
       end
+
+      partial_def :m, [TrueClass] do |tru|
+        beis(tru)
+      end
+
     end
   end
 
@@ -42,6 +47,10 @@ describe 'base tests' do
 
   it 'base funciona con 2 argumentos' do
     expect(C.new.m('pe')).to eq('hola pepe querido')
+  end
+
+  it 'beis funciona' do
+    expect(C.new.m(true)).to eq("BEIS!")
   end
 
   it 'base funciona con herencia' do
