@@ -26,7 +26,7 @@ describe 'base tests' do
       end
     end
 
-    class C
+    class C < B
       partial_def :m, [String, String] do |text1, text2|
         'hola '+text1+text2
       end
@@ -50,7 +50,7 @@ describe 'base tests' do
   end
 
   it 'beis funciona' do
-    expect(C.new.m(true)).to eq("BEIS!")
+    expect(C.new.m(true)).to eq("A>m")
   end
 
   it 'base funciona con herencia' do

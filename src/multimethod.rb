@@ -76,14 +76,16 @@ end
 
 class Wrapper < BasicObject
 
-  attr_accessor :true_receiver
+  attr_accessor :true_receiver, :current_partial_definition, :current_multi_method
 
-  def initialize(true_receiver)
+  def initialize(true_receiver,partial_def,multi_method)
     self.true_receiver = true_receiver
+    self.current_partial_definition = partial_def
+    self.current_multi_method = multi_method
   end
 
-  def beis(a)
-    "BEIS!"
+  def beis(*args)
+    current_multi_method.execute_following_definition(*args,current_partial_definition,true_receiver)
   end
 
   def method_missing(symbol, *arguments)
@@ -109,16 +111,26 @@ class MultiMethod
     self.definitions.collect_concat{|definition| definition.partial_definitions}.uniq {|partial_def| partial_def.parameters_types}
   end
 
+  def execute_following_definition(*arguments, current_def,receiver)
+
+    receiver.instance_exec(*arguments,&(self.next_definition_for *arguments,current_def))
+  end
+
   def execute_for(*arguments, receiver)
 
     if (self.partial_definitions.none?{|definition| definition.matches *arguments})
       raise NonexistentMultimethodDefinitonError.new('Los argumentos no coinciden en cantidad y/o tipo con los parámetros de ninguna defincición para este método')
     end
 
-    wrapper = Wrapper.new(receiver)
+    wrapper = Wrapper.new(receiver,(self.closest_definition_for *arguments),self)
 
     wrapper.instance_exec(*arguments,&(self.closest_definition_for *arguments))
   end
+
+  def next_definition_for(*arguments,current_def)
+    self.matching_definitions_for(*arguments).at(self.matching_definitions_for(*arguments).find_index(current_def)+1)
+  end
+
 
   def closest_definition_for(*arguments)
     self.matching_definitions_for(*arguments).min_by {|definition| definition.distance_to *arguments}
