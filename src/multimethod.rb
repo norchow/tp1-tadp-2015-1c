@@ -113,7 +113,15 @@ class MultiMethod
 
   def execute_following_definition(*arguments, current_def,receiver)
 
-    receiver.instance_exec(*arguments,&(self.next_definition_for *arguments,current_def))
+    execute_partial_definition(*arguments,(self.next_definition_for *arguments,current_def),receiver)
+  end
+
+  def execute_partial_definition(*arguments, partial_definition,receiver)
+
+    wrapper = Wrapper.new(receiver,partial_definition,self)
+
+    wrapper.instance_exec(*arguments,&partial_definition)
+
   end
 
   def execute_for(*arguments, receiver)
@@ -122,9 +130,8 @@ class MultiMethod
       raise NonexistentMultimethodDefinitonError.new('Los argumentos no coinciden en cantidad y/o tipo con los parámetros de ninguna defincición para este método')
     end
 
-    wrapper = Wrapper.new(receiver,(self.closest_definition_for *arguments),self)
+    execute_partial_definition(*arguments,(self.closest_definition_for *arguments),receiver)
 
-    wrapper.instance_exec(*arguments,&(self.closest_definition_for *arguments))
   end
 
   def next_definition_for(*arguments,current_def)

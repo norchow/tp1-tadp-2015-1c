@@ -34,8 +34,22 @@ describe 'base tests' do
         base.m([String, String], text, text) + ' querido'
       end
 
-      partial_def :m, [TrueClass] do |tru|
-        beis(tru)
+    end
+
+    class D
+      partial_def :m, [Object] do |o|
+        "A>m"
+      end
+    end
+
+    class E < D
+
+      partial_def :m, [Integer] do |i|
+        beis(i) + " => B>m_integer(#{i})"
+      end
+
+      partial_def :m, [Numeric] do |n|
+        beis(n) + " => B>m_numeric"
       end
 
     end
@@ -50,8 +64,10 @@ describe 'base tests' do
   end
 
   it 'beis funciona' do
-    expect(C.new.m(true)).to eq("A>m")
+    expect(E.new.m(1.8)).to eq("A>m => B>m_numeric")
+    expect(E.new.m(1)).to eq("A>m => B>m_numeric => B>m_integer(1)")
   end
+
 
   it 'base funciona con herencia' do
     expect(B.new.m(1)).to eq('A>m => B>m_numeric => B>m_integer(1)')
