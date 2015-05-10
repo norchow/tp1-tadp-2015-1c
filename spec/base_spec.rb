@@ -25,6 +25,12 @@ describe 'base tests' do
       partial_def :m,[Numeric] do |n|
         base.m([Object], n) + " => B>m_numeric"
       end
+
+      partial_def :metodoErroneo,[Integer] do |n|
+        base.metodoErroneo([Numeric], n)
+      end
+
+
     end
 
     class C < B
@@ -64,13 +70,18 @@ describe 'base tests' do
     expect(C.new.m('pe')).to eq('hola pepe querido')
   end
 
-  it 'beis funciona' do
-    expect(E.new.m(1.8)).to eq("A>m => B>m_numeric")
-    expect(E.new.m(1)).to eq("A>m => B>m_numeric => B>m_integer(1)")
-  end
-
   it 'base funciona con herencia' do
     expect(B.new.m(1)).to eq('A>m => B>m_numeric => B>m_integer(1)')
     expect(B.new.m(1.5)).to eq('A>m => B>m_numeric')
   end
+
+  it 'base falla si la definición no existe' do
+    expect {B.new.metodoErroneo(1)}.to raise_error(NonexistentMultimethodDefinitonError)
+    end
+
+  it 'base implicito funciona' do
+    expect(E.new.m(1.8)).to eq("A>m => B>m_numeric")
+    expect(E.new.m(1)).to eq("A>m => B>m_numeric => B>m_integer(1)")
+  end
+
 end
