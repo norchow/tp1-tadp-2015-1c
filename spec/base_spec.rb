@@ -59,6 +59,15 @@ describe 'base tests' do
         base(n) + " => B>m_numeric"
       end
 
+      partial_def :metodoErroneo, [Integer] do |i|
+        base(i) + " => B>m_integer(#{i})"
+      end
+
+      partial_def :metodoErroneo, [Numeric] do |n|
+        base(n) + " => B>m_numeric"
+      end
+
+
     end
   end
 
@@ -77,11 +86,15 @@ describe 'base tests' do
 
   it 'base falla si la definición no existe' do
     expect {B.new.metodoErroneo(1)}.to raise_error(NonexistentMultimethodDefinitonError)
-    end
+  end
 
   it 'base implicito funciona' do
     expect(E.new.m(1.8)).to eq("A>m => B>m_numeric")
     expect(E.new.m(1)).to eq("A>m => B>m_numeric => B>m_integer(1)")
+  end
+
+  it 'base implicito falla si la definición ya es la más generica' do
+    expect {E.new.metodoErroneo(1)}.to raise_error(NonexistentMultimethodDefinitonError)
   end
 
 end

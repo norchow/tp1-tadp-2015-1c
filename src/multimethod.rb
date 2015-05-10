@@ -94,6 +94,10 @@ class MultiMethod
 
   def execute_following_definition(*arguments,receiver)
 
+    if(self.next_definition_for(*arguments).nil?)
+      raise NonexistentMultimethodDefinitonError.new('No existe una definición más genérica para llamar')
+    end
+
     execute_partial_definition(*arguments,(self.next_definition_for *arguments),receiver)
   end
 
