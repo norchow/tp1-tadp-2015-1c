@@ -15,9 +15,8 @@ class Wrapper < BasicObject
 
   attr_accessor :true_receiver, :current_partial_definition, :current_multi_method
 
-  def initialize(true_receiver,partial_def,multi_method)
+  def initialize(true_receiver,multi_method)
     self.true_receiver = true_receiver
-    self.current_partial_definition = partial_def
     self.current_multi_method = multi_method
   end
 
@@ -25,7 +24,7 @@ class Wrapper < BasicObject
     if(args.empty?)
     ::BaseMultiMethod.new(true_receiver)
     else
-      current_multi_method.execute_following_definition(*args,current_partial_definition,true_receiver)
+      current_multi_method.execute_following_definition(*args,true_receiver)
     end
   end
 

@@ -77,7 +77,7 @@ end
 
 class MultiMethod
 
-  attr_accessor :symbol, :definitions
+  attr_accessor :symbol, :definitions, :current_partial_definition
 
   def initialize(symbol,definitions)
     self.symbol = symbol
@@ -92,14 +92,16 @@ class MultiMethod
     self.definitions.collect_concat{|definition| definition.partial_definitions}.uniq {|partial_def| partial_def.parameters_types}
   end
 
-  def execute_following_definition(*arguments, current_def,receiver)
+  def execute_following_definition(*arguments,,receiver)
 
-    execute_partial_definition(*arguments,(self.next_definition_for *arguments,current_def),receiver)
+    execute_partial_definition(*arguments,(self.next_definition_for *arguments),receiver)
   end
 
   def execute_partial_definition(*arguments, partial_definition,receiver)
 
-    wrapper = Wrapper.new(receiver,partial_definition,self)
+    self.current_partial_definition = partial_definition
+
+    wrapper = Wrapper.new(receiver,self)
 
     wrapper.instance_exec(*arguments,&partial_definition)
 
@@ -115,8 +117,8 @@ class MultiMethod
 
   end
 
-  def next_definition_for(*arguments,current_def)
-    self.matching_definitions_for(*arguments).at(self.matching_definitions_for(*arguments).find_index(current_def)+1)
+  def next_definition_for(*arguments)
+    self.matching_definitions_for(*arguments).at(self.matching_definitions_for(*arguments).find_index(current_partial_definition)+1)
   end
 
 
