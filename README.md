@@ -1,6 +1,6 @@
 # Ruby Multi-methods
 
-Implementación de una extención al lenguaje Ruby para que este soporte métodos con definiciones parciales según el tipo de los parámetros con que se los llama
+Implementación de una extensión al lenguaje Ruby para que este soporte métodos con definiciones parciales según el tipo de los parámetros con que se los llama
 
 # Decisiones de diseño tomadas/ a discutir
 
