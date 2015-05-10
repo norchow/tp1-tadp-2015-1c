@@ -14,7 +14,7 @@ describe 'base tests' do
       end
 
       partial_def :m,[Symbol] do |text|
-        'hola '+text.first #Preguntar por qué text es un Array
+        'hola '+text
       end
     end
 

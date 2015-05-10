@@ -6,7 +6,7 @@ class BaseMultiMethod
   def method_missing(sym, *args)
     param_types = args.first
     arguments = args.drop(1)
-    self.receiver.class.multimethod(sym).execute_strict_matching_for(param_types, arguments, receiver)
+    self.receiver.class.multimethod(sym).execute_strict_matching_for(param_types, *arguments, receiver)
   end
 end
 
