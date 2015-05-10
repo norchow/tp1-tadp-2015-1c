@@ -1,5 +1,5 @@
 require 'rspec'
-require_relative '../src/base'
+require_relative '../src/multimethod'
 
 describe 'base tests' do
   before(:all) do

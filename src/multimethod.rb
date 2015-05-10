@@ -1,4 +1,5 @@
 require_relative 'partialblock'
+require_relative 'base'
 
 class Module
   attr_accessor :multi_method_definitions
@@ -70,26 +71,6 @@ class MultiMethodDefinition
 
   def add_partial_definition(partial_definition)
     self.partial_definitions << partial_definition
-  end
-
-end
-
-class Wrapper < BasicObject
-
-  attr_accessor :true_receiver, :current_partial_definition, :current_multi_method
-
-  def initialize(true_receiver,partial_def,multi_method)
-    self.true_receiver = true_receiver
-    self.current_partial_definition = partial_def
-    self.current_multi_method = multi_method
-  end
-
-  def beis(*args)
-    current_multi_method.execute_following_definition(*args,current_partial_definition,true_receiver)
-  end
-
-  def method_missing(symbol, *arguments)
-    true_receiver.send(symbol,*arguments)
   end
 
 end
