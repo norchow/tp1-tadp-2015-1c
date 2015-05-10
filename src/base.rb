@@ -10,14 +10,8 @@ class BaseMultiMethod
   end
 end
 
-class Object
-  def base
-    BaseMultiMethod.new(self)
-  end
-end
-
-
 class Wrapper < BasicObject
+
 
   attr_accessor :true_receiver, :current_partial_definition, :current_multi_method
 
@@ -27,9 +21,14 @@ class Wrapper < BasicObject
     self.current_multi_method = multi_method
   end
 
-  def beis(*args)
-    current_multi_method.execute_following_definition(*args,current_partial_definition,true_receiver)
+  def base(*args)
+    if(args.empty?)
+    ::BaseMultiMethod.new(true_receiver)
+    else
+      current_multi_method.execute_following_definition(*args,current_partial_definition,true_receiver)
+    end
   end
+
 
   def method_missing(symbol, *arguments)
     true_receiver.send(symbol,*arguments)

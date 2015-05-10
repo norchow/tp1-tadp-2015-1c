@@ -1,6 +1,7 @@
 require 'rspec'
 require_relative '../src/multimethod'
 
+
 describe 'base tests' do
   before(:all) do
     class A
@@ -45,11 +46,11 @@ describe 'base tests' do
     class E < D
 
       partial_def :m, [Integer] do |i|
-        beis(i) + " => B>m_integer(#{i})"
+        base(i) + " => B>m_integer(#{i})"
       end
 
       partial_def :m, [Numeric] do |n|
-        beis(n) + " => B>m_numeric"
+        base(n) + " => B>m_numeric"
       end
 
     end
@@ -67,7 +68,6 @@ describe 'base tests' do
     expect(E.new.m(1.8)).to eq("A>m => B>m_numeric")
     expect(E.new.m(1)).to eq("A>m => B>m_numeric => B>m_integer(1)")
   end
-
 
   it 'base funciona con herencia' do
     expect(B.new.m(1)).to eq('A>m => B>m_numeric => B>m_integer(1)')

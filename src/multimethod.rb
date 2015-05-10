@@ -142,7 +142,7 @@ class MultiMethod
       raise NonexistentMultimethodDefinitonError.new('No hay una definición parcial para esos tipos')
     end
 
-    receiver.instance_exec(*arguments,&(self.strict_definition_for(param_types,*arguments)))
+    execute_partial_definition(*arguments,(self.strict_definition_for(param_types,*arguments)),receiver)
   end
 end
 
