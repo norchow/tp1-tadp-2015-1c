@@ -28,7 +28,7 @@ class PartialBlock < Proc
       raise ArgumentError.new('La cantidad de parametros informados no coinciden con la cantidad de parametros usados en el bloque')
     end
 
-    self.block.call(some_parameters)
+    self.block.call(*some_parameters)
   end
 
   def same_lists_size?(list1, list2)
@@ -40,7 +40,7 @@ class PartialBlock < Proc
   end
 
   def distance_to(*arguments)
-    ((arguments.zip self.parameters_types).collect { |argument,parameter_type| self.distance_between(argument,parameter_type) }).reduce(:+)
+    ((arguments.zip self.parameters_types).collect { |argument,parameter_type| self.distance_between(argument,parameter_type)*(parameters_types.find_index(parameter_type)+1)}).reduce(:+)
   end
 
   def distance_between(argument,parameter_type)

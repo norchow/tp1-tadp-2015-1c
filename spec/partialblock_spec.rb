@@ -45,11 +45,30 @@ describe 'PartialBlock tests' do
     expect(pi.matches()).to be(true)
   end
 
+
+  it 'Calcula bien la distancia entre argumento y su tipo' do
+    distanceBlock = PartialBlock.new([Numeric]) do |num|
+      num
+    end
+    expect(distanceBlock.distance_between(3,Numeric)).to eq(2)
+    expect(distanceBlock.distance_between(3,Integer)).to eq(1)
+  end
+
   it 'Calcula bien la distancia' do
     distanceBlock = PartialBlock.new([Numeric]) do |num|
       num
     end
-    expect(distanceBlock.distance(3)).to eq(2)
-    expect(distanceBlock.distance(3.0)).to eq(1)
+    expect(distanceBlock.distance_to(3)).to eq(2)
+    expect(distanceBlock.distance_to(3.0)).to eq(1)
+  end
+
+
+  it 'Calcula bien la distancia con 2 parametros' do
+
+    distanceBlock1 = PartialBlock.new([Numeric,Integer]) do |num,num2|
+      num
+    end
+    expect(distanceBlock1.distance_to(3.0,3)).to eq(3)
+    expect(distanceBlock1.distance_to(3,3)).to eq(4)
   end
 end
