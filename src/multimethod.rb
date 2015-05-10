@@ -92,7 +92,7 @@ class MultiMethod
     self.definitions.collect_concat{|definition| definition.partial_definitions}.uniq {|partial_def| partial_def.parameters_types}
   end
 
-  def execute_following_definition(*arguments,,receiver)
+  def execute_following_definition(*arguments,receiver)
 
     execute_partial_definition(*arguments,(self.next_definition_for *arguments),receiver)
   end
